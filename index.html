@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scan Barcode dan Simpan Data</title>
+    <title>Scan Barcode dan Simpan Data Barang</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
         body {
@@ -56,6 +56,8 @@
         }, function (err) {
             if (!err) {
                 Quagga.start();
+            } else {
+                console.log("Error: " + err);
             }
         });
 
@@ -64,24 +66,32 @@
             let barcode = result.codeResult.code;
             document.getElementById("result").innerHTML = "Barcode Terdeteksi: " + barcode;
 
-            // Ambil data dari localStorage (jika ada)
-            let existingData = JSON.parse(localStorage.getItem("barangData")) || [];
+            // Ambil data barang berdasarkan barcode
+            let dataBarang = getBarangData(barcode);
 
-            // Simulasi data barang berdasarkan barcode
-            let dataBarang = {
+            // Simpan data ke localStorage
+            saveDataToLocalStorage(dataBarang);
+
+            // Tampilkan data yang baru disimpan
+            displaySavedData();
+        });
+
+        // Fungsi untuk mendapatkan data barang (simulasi)
+        function getBarangData(barcode) {
+            return {
                 barcode: barcode,
                 kodeBarang: "KDB-" + Math.floor(Math.random() * 1000),
                 namaBarang: "Barang Contoh " + barcode,
                 jenisBarang: "Jenis " + Math.floor(Math.random() * 10)
             };
+        }
 
-            // Simpan data ke localStorage
+        // Fungsi untuk menyimpan data ke localStorage
+        function saveDataToLocalStorage(dataBarang) {
+            let existingData = JSON.parse(localStorage.getItem("barangData")) || [];
             existingData.push(dataBarang);
             localStorage.setItem("barangData", JSON.stringify(existingData));
-
-            // Tampilkan data yang baru disimpan
-            displaySavedData();
-        });
+        }
 
         // Fungsi untuk menampilkan data yang disimpan
         function displaySavedData() {
