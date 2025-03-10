@@ -36,11 +36,11 @@
 </head>
 <body>
 
-    <h2>Scan Barcode dan Simpan Data Otomatis</h2>
+    <h2>Scan Barcode dan Simpan Data Barang</h2>
     <video id="preview"></video>
 
     <div id="result">
-        <p>Scan barcode untuk melihat informasi tabung.</p>
+        <p>Scan barcode untuk melihat informasi barang.</p>
     </div>
 
     <div id="savedData">
@@ -52,7 +52,7 @@
         // Inisialisasi Quagga untuk scan barcode
         Quagga.init({
             inputStream: { type: "LiveStream", target: document.querySelector("#preview") },
-            decoder: { readers: ["code_128_reader", "ean_reader"] }
+            decoder: { readers: ["code_128_reader", "ean_reader", "ean_13_reader", "ean_8_reader"] }
         }, function (err) {
             if (!err) {
                 Quagga.start();
@@ -62,22 +62,22 @@
         // Ketika barcode terdeteksi
         Quagga.onDetected(function (result) {
             let barcode = result.codeResult.code;
-            document.getElementById("result").innerHTML = "Scanning Barcode: " + barcode;
+            document.getElementById("result").innerHTML = "Barcode Terdeteksi: " + barcode;
 
             // Ambil data dari localStorage (jika ada)
-            let existingData = JSON.parse(localStorage.getItem("tabungData")) || [];
+            let existingData = JSON.parse(localStorage.getItem("barangData")) || [];
 
-            // Simulasi data yang diambil berdasarkan barcode
-            let dataTabung = {
+            // Simulasi data barang berdasarkan barcode
+            let dataBarang = {
                 barcode: barcode,
-                nomorTabung: "TAB-" + Math.floor(Math.random() * 1000),
-                namaBarang: "Tabung Gas 3Kg",
-                lokasi: "Gudang A"
+                kodeBarang: "KDB-" + Math.floor(Math.random() * 1000),
+                namaBarang: "Barang Contoh " + barcode,
+                jenisBarang: "Jenis " + Math.floor(Math.random() * 10)
             };
 
-            // Simpan data ke localStorage secara otomatis
-            existingData.push(dataTabung);
-            localStorage.setItem("tabungData", JSON.stringify(existingData));
+            // Simpan data ke localStorage
+            existingData.push(dataBarang);
+            localStorage.setItem("barangData", JSON.stringify(existingData));
 
             // Tampilkan data yang baru disimpan
             displaySavedData();
@@ -85,7 +85,7 @@
 
         // Fungsi untuk menampilkan data yang disimpan
         function displaySavedData() {
-            let savedData = JSON.parse(localStorage.getItem("tabungData")) || [];
+            let savedData = JSON.parse(localStorage.getItem("barangData")) || [];
             let dataListElement = document.getElementById("dataList");
 
             dataListElement.innerHTML = ""; // Clear the previous list
@@ -95,9 +95,9 @@
                     let div = document.createElement("div");
                     div.classList.add("card");
                     div.innerHTML = `
-                        <strong>Nomor Tabung:</strong> ${item.nomorTabung} <br>
                         <strong>Nama Barang:</strong> ${item.namaBarang} <br>
-                        <strong>Lokasi:</strong> ${item.lokasi} <br>
+                        <strong>Kode Barang:</strong> ${item.kodeBarang} <br>
+                        <strong>Jenis Barang:</strong> ${item.jenisBarang} <br>
                         <strong>Barcode:</strong> ${item.barcode} <br><br>
                     `;
                     dataListElement.appendChild(div);
