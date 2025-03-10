@@ -32,21 +32,11 @@
             background-color: #ffffff;
             border: 1px solid #ccc;
         }
-        .btn {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
 
-    <h2>Scan Barcode dan Simpan Data</h2>
+    <h2>Scan Barcode dan Simpan Data Otomatis</h2>
     <video id="preview"></video>
 
     <div id="result">
@@ -85,7 +75,7 @@
                 lokasi: "Gudang A"
             };
 
-            // Simpan data ke localStorage jika belum ada
+            // Simpan data ke localStorage secara otomatis
             existingData.push(dataTabung);
             localStorage.setItem("tabungData", JSON.stringify(existingData));
 
@@ -109,23 +99,12 @@
                         <strong>Nama Barang:</strong> ${item.namaBarang} <br>
                         <strong>Lokasi:</strong> ${item.lokasi} <br>
                         <strong>Barcode:</strong> ${item.barcode} <br><br>
-                        <button class="btn" onclick="removeData('${item.barcode}')">Hapus Data</button>
                     `;
                     dataListElement.appendChild(div);
                 });
             } else {
                 dataListElement.innerHTML = "<p>No data available</p>";
             }
-        }
-
-        // Fungsi untuk menghapus data dari localStorage berdasarkan barcode
-        function removeData(barcode) {
-            let existingData = JSON.parse(localStorage.getItem("tabungData")) || [];
-            let filteredData = existingData.filter(item => item.barcode !== barcode);
-            localStorage.setItem("tabungData", JSON.stringify(filteredData));
-
-            // Refresh tampilan data
-            displaySavedData();
         }
 
         // Load saved data when page is loaded
